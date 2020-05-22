@@ -1,0 +1,35 @@
+FROM debian:buster-slim
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN apt-get update -qq \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends \
+      build-essential ca-certificates curl gnupg less vim xz-utils
+
+WORKDIR /root
+
+RUN mkdir -p /busybox/{bin,lib}
+
+ARG musl_version=1.2.0
+
+# Download musl key
+RUN curl -fsSL -o /tmp/musl.pub 'https://musl.libc.org/musl.pub' \
+ && sha256sum -c <<< 'bf6baaa63c2c4958636850a24bb9d2d514c8b6a1b3ab9c08f3b75910fb6f57be  /tmp/musl.pub' \
+ && gpg --import /tmp/musl.pub \
+ && gpg --import-ownertrust <<< '836489290BB6B70F99FFDA0556BCDB593020450F:6:'
+
+# Download musl
+RUN curl -fsSL -o /tmp/musl.tar.gz "https://musl.libc.org/releases/musl-${musl_version}.tar.gz" \
+ && curl -fsSL -o /tmp/musl.tar.gz.asc "https://musl.libc.org/releases/musl-${musl_version}.tar.gz.asc" \
+ && gpg --verify /tmp/musl.tar.gz.asc \
+ && tar -xzf /tmp/musl.tar.gz \
+ && mv musl-* musl \
+ && rm -f /tmp/musl*
+
+# Compile
+RUN cd musl \
+ && CFLAGS='-Os' ./configure --syslibdir=/busybox/lib \
+ && make && make install \
+ && while IFS= read -r lib; do mv "$(readlink "$lib")" "$lib" ; done < <(find -- /busybox/lib -type l)
+
+ENV PATH="/usr/local/musl/bin:$PATH"

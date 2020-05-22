@@ -1,0 +1,43 @@
+FROM middagj/kaniko-base
+
+ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
+ARG bash_version=5.0
+ARG bash_patch_level=17
+ARG bash_patch_prefix=bash50
+
+# Download bash key
+RUN gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys '7C0135FB088AAF6C66C650B9BB5869F064EA74AB' \
+ && gpg --import-ownertrust <<< '7C0135FB088AAF6C66C650B9BB5869F064EA74AB:6:'
+
+# Download bash
+RUN curl -fsSL -o /tmp/bash.tar.gz "${gnu_mirror}/bash/bash-${bash_version}.tar.gz" \
+ && curl -fsSL -o /tmp/bash.tar.gz.sig "${gnu_mirror}/bash/bash-${bash_version}.tar.gz.sig" \
+ && gpg --verify /tmp/bash.tar.gz.sig \
+ && tar -xzf /tmp/bash.tar.gz \
+ && mv bash* bash \
+ && rm -f /tmp/bash*
+
+# Download bash patches
+RUN for lvl in $(seq $bash_patch_level); do \
+      curl -fsSL -o "/tmp/bash-$(printf '%03d' $lvl)" "${gnu_mirror}/bash/bash-${bash_version}-patches/${bash_patch_prefix}-$(printf '%03d' $lvl)" \
+      && curl -fsSL -o "/tmp/bash-$(printf '%03d' $lvl).sig" "${gnu_mirror}/bash/bash-${bash_version}-patches/${bash_patch_prefix}-$(printf '%03d' $lvl).sig" ;\
+    done \
+ && cd bash \
+ && while IFS= read -r file; do \
+      gpg --verify "$file" ; \
+      patch -i "${file%.sig}" -p 2 ; \
+    done < <(find -- /tmp -type f -name 'bash*.sig' | sort) \
+ && rm -f /tmp/bash*
+
+# Compile bash
+RUN cd bash \
+ && FORCE_UNSAFE_CONFIGURE=1 CC='musl-gcc' \
+    CFLAGS='-Os -ffunction-sections -fdata-sections' \
+    LDFLAGS='-Wl,--gc-sections' \
+    ./configure --without-bash-malloc \
+ && make bash && mv bash /busybox/bin
+
+# Clean /busybox
+RUN while IFS= read -r file; do \
+      strip -s -R .comment -R .gnu.version --strip-unneeded "$file" ; \
+    done < <(find -- /busybox/bin -type f | sort)
