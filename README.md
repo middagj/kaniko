@@ -1,6 +1,6 @@
 # kaniko
 
-Kaniko image with normal bash, coreutils, findutils and grep.
+Kaniko image with normal bash, coreutils, findutils, grep and git.
 
 ## Addition
 The additional files are placed in `/busybox` so the GitLab runner picks them up.

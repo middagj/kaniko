@@ -5,6 +5,7 @@ COPY --from=middagj/kaniko-base /busybox /busybox
 COPY --from=middagj/kaniko-bash /busybox /busybox
 COPY --from=middagj/kaniko-coreutils /busybox /busybox
 COPY --from=middagj/kaniko-findutils /busybox /busybox
+COPY --from=middagj/kaniko-git /busybox /busybox
 COPY --from=middagj/kaniko-grep /busybox /busybox
 
 ENV PATH="$PATH:/busybox/bin:/busybox"

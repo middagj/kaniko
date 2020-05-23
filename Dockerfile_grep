@@ -4,20 +4,23 @@ ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
 ARG grep_version=3.4
 ARG grep_checksum=58e6751c41a7c25bfc6e9363a41786cff3ba5709cf11d5ad903cf7cce31cc3fb
 
-# Download grep
+# Download
 RUN curl -fsSL -o /tmp/grep.tar.xz "${gnu_mirror}/grep/grep-${grep_version}.tar.xz" \
  && sha256sum -c <<< "${grep_checksum}  /tmp/grep.tar.xz" \
  && tar -xJf /tmp/grep.tar.xz \
  && mv grep-* grep \
  && rm -f /tmp/grep*
 
-# Compile grep
+# Compile
 RUN cd grep \
  && CC='musl-gcc' \
     CFLAGS="-Os -ffunction-sections -fdata-sections -I$HOME/include" \
     LDFLAGS="-Wl,--gc-sections -static -L$HOME/lib" \
     ./configure \
- && make && mv src/grep /busybox/bin/
+ && make
+
+# Install
+RUN mv grep/src/grep /busybox/bin/
 
 # Clean /busybox
 RUN while IFS= read -r file; do \

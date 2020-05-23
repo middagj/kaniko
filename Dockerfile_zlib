@@ -1,0 +1,22 @@
+FROM middagj/kaniko-base
+
+ARG zlib_version=1.2.11
+ARG zlib_checksum=4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066
+
+# Download
+RUN curl -fsSL -o /tmp/zlib.tar.xz "http://downloads.sourceforge.net/sourceforge/libpng/zlib-${zlib_version}.tar.xz" \
+ && sha256sum -c <<< "${zlib_checksum}  /tmp/zlib.tar.xz" \
+ && tar -xJf /tmp/zlib.tar.xz \
+ && mv zlib-* zlib \
+ && rm -f /tmp/zlib*
+
+# Compile
+RUN cd zlib \
+ && CC='musl-gcc' \
+    CFLAGS='-Os -ffunction-sections -fdata-sections' \
+    LDFLAGS='-Wl,--gc-sections' \
+    ./configure --prefix=$HOME \
+ && make
+
+# Install
+RUN cd zlib && make install

@@ -1,0 +1,32 @@
+FROM middagj/kaniko-pcre
+
+ARG git_version=2.26.2
+ARG git_checksum=6d65132471df9e531807cb2746f8be317e22a343b9385bbe11c9ce7f0d2fc848
+
+# Download
+RUN curl -fsSL -o /tmp/git.tar.xz "https://mirrors.edge.kernel.org/pub/software/scm/git/git-${git_version}.tar.xz" \
+ && sha256sum -c <<< "${git_checksum}  /tmp/git.tar.xz" \
+ && tar -xJf /tmp/git.tar.xz \
+ && mv git-* git \
+ && rm -f /tmp/git*
+
+# Temp sh
+RUN ln -s /bin/sh /busybox/sh
+
+# Compile
+RUN cd git \
+ && CC='musl-gcc' \
+    CFLAGS="-Os -ffunction-sections -fdata-sections -I$HOME/include" \
+    LDFLAGS="-Wl,--gc-sections -static -L$HOME/lib" \
+    ./configure --without-curl --without-iconv --without-openssl --without-python --without-tcltk \
+                --with-libpcre1 --with-shell=/busybox/sh \
+ && make
+
+# Install
+RUN mv git/git /busybox/bin
+
+# Clean /busybox
+RUN while IFS= read -r file; do \
+      strip -s -R .comment -R .gnu.version --strip-unneeded "$file" ; \
+    done < <(find -- /busybox/bin -type f | sort) \
+ && rm -f /busybox/sh

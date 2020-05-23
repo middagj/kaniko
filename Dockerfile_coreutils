@@ -4,20 +4,23 @@ ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
 ARG coreutils_version=8.32
 ARG coreutils_checksum=4458d8de7849df44ccab15e16b1548b285224dbba5f08fac070c1c0e0bcc4cfa
 
-# Download coreutils
+# Download
 RUN curl -fsSL -o /tmp/coreutils.tar.xz "${gnu_mirror}/coreutils/coreutils-${coreutils_version}.tar.xz" \
  && sha256sum -c <<< "${coreutils_checksum}  /tmp/coreutils.tar.xz" \
  && tar -xJf /tmp/coreutils.tar.xz \
  && mv coreutils-* coreutils \
  && rm -f /tmp/coreutils*
 
-# Compile coreutils
+# Compile
 RUN cd coreutils \
  && FORCE_UNSAFE_CONFIGURE=1 CC='musl-gcc' \
     CFLAGS='-Os -ffunction-sections -fdata-sections' \
     LDFLAGS='-Wl,--gc-sections' \
     ./configure --prefix=/busybox \
- && make && make install
+ && make
+
+# Install
+RUN cd coreutils && make install
 
 # Clean /busybox
 RUN while IFS= read -r file; do \
