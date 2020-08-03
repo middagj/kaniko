@@ -2,7 +2,7 @@ FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
 ARG bash_version=5.0
-ARG bash_patch_level=17
+ARG bash_patch_level=18
 ARG bash_patch_prefix=bash50
 
 # Download public key
