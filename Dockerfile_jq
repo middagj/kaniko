@@ -1,0 +1,15 @@
+FROM middagj/kaniko-base
+
+ARG jq_version=1.6
+ARG jq_checksum=af986793a515d500ab2d35f8d2aecd656e764504b789b66d7e1a0b727a124c44
+
+# Download and install
+RUN curl -fsSL -o /busybox/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${jq_version}/jq-linux64" \
+ && sha256sum -c <<< "${jq_checksum}  /busybox/bin/jq" \
+ && chmod a+x /busybox/bin/jq
+
+# Clean /busybox
+RUN while IFS= read -r file; do \
+      strip -s -R .comment -R .gnu.version --strip-unneeded "$file" ; \
+    done < <(find -- /busybox/bin -type f | sort) \
+ && rm -f /busybox/sh
