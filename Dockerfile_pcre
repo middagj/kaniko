@@ -14,6 +14,7 @@ RUN curl -fsSL -o /tmp/pcre.tar.bz2 "https://ftp.pcre.org/pub/pcre/pcre-${pcre_v
 RUN cd pcre \
  && CC='musl-gcc' \
     CFLAGS='-Os -ffunction-sections -fdata-sections' \
-    LDFLAGS='-Wl,--gc-sections' \
-    ./configure --prefix=$HOME \
+    CPPFLAGS='-I/root/include' \
+    LDFLAGS='-Wl,--gc-sections -L/root/lib' \
+    ./configure --prefix=$HOME --disable-cpp --enable-jit --enable-utf \
  && make && make install

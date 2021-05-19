@@ -1,0 +1,20 @@
+FROM middagj/kaniko-zlib
+
+ARG pcre2_version=10.36
+ARG pcre2_checksum=a9ef39278113542968c7c73a31cfcb81aca1faa64690f400b907e8ab6b4a665c
+
+# Download
+RUN curl -fsSL -o /tmp/pcre2.tar.bz2 "https://ftp.pcre.org/pub/pcre/pcre2-${pcre2_version}.tar.bz2" \
+ && sha256sum -c <<< "${pcre2_checksum}  /tmp/pcre2.tar.bz2" \
+ && tar -xjf /tmp/pcre2.tar.bz2 \
+ && mv pcre2-* pcre2 \
+ && rm -f /tmp/pcre2*
+
+# Compile
+RUN cd pcre2 \
+ && CC='musl-gcc' \
+    CFLAGS='-Os -ffunction-sections -fdata-sections' \
+    CPPFLAGS='-I/root/include' \
+    LDFLAGS='-Wl,--gc-sections -L/root/lib' \
+    ./configure --prefix=$HOME \
+ && make && make install

@@ -1,9 +1,9 @@
 FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
-ARG bash_version=5.0
-ARG bash_patch_level=18
-ARG bash_patch_prefix=bash50
+ARG bash_version=5.1
+ARG bash_patch_level=8
+ARG bash_patch_prefix=bash51
 
 # Download public key
 RUN gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys '7C0135FB088AAF6C66C650B9BB5869F064EA74AB' \
