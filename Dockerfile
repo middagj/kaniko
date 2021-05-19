@@ -1,6 +1,6 @@
-FROM gcr.io/kaniko-project/executor:v1.5.1
+FROM gcr.io/kaniko-project/executor:v1.5.2
 
-COPY --from=gcr.io/kaniko-project/warmer:v1.5.1 /kaniko/warmer /kaniko
+COPY --from=gcr.io/kaniko-project/warmer:v1.5.2 /kaniko/warmer /kaniko
 COPY --from=middagj/kaniko-base /busybox /busybox
 COPY --from=middagj/kaniko-bash /busybox /busybox
 COPY --from=middagj/kaniko-coreutils /busybox /busybox
