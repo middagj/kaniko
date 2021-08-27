@@ -6,7 +6,7 @@ ARG bash_patch_level=8
 ARG bash_patch_prefix=bash51
 
 # Download public key
-RUN gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys '7C0135FB088AAF6C66C650B9BB5869F064EA74AB' \
+RUN gpg --batch --keyserver keyserver.ubuntu.com --recv-keys '7C0135FB088AAF6C66C650B9BB5869F064EA74AB' \
  && gpg --import-ownertrust <<< '7C0135FB088AAF6C66C650B9BB5869F064EA74AB:6:'
 
 # Download
