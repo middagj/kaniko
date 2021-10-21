@@ -3,7 +3,7 @@
 set -e
 
 if [[ -z $1 ]]; then
-    docker pull debian:buster-slim
+    docker pull debian:bullseye-slim
 fi
 
 for part in base zlib pcre pcre2 bash coreutils findutils git grep make sed jq; do
