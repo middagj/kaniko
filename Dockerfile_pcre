@@ -1,10 +1,10 @@
 FROM middagj/kaniko-zlib
 
-ARG pcre_version=8.44
-ARG pcre_checksum=19108658b23b3ec5058edc9f66ac545ea19f9537234be1ec62b714c84399366d
+ARG pcre_version=8.45
+ARG pcre_checksum=4dae6fdcd2bb0bb6c37b5f97c33c2be954da743985369cddac3546e3218bffb8
 
 # Download
-RUN curl -fsSL -o /tmp/pcre.tar.bz2 "https://ftp.pcre.org/pub/pcre/pcre-${pcre_version}.tar.bz2" \
+RUN curl -fsSL -o /tmp/pcre.tar.bz2 "https://downloads.sourceforge.net/project/pcre/pcre/${pcre_version}/pcre-${pcre_version}.tar.bz2" \
  && sha256sum -c <<< "${pcre_checksum}  /tmp/pcre.tar.bz2" \
  && tar -xjf /tmp/pcre.tar.bz2 \
  && mv pcre-* pcre \

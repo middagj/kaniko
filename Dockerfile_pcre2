@@ -1,10 +1,11 @@
 FROM middagj/kaniko-zlib
 
-ARG pcre2_version=10.36
-ARG pcre2_checksum=a9ef39278113542968c7c73a31cfcb81aca1faa64690f400b907e8ab6b4a665c
+ARG pcre2_version=10.39
+ARG pcre2_checksum=0f03caf57f81d9ff362ac28cd389c055ec2bf0678d277349a1a4bee00ad6d440
 
 # Download
-RUN curl -fsSL -o /tmp/pcre2.tar.bz2 "https://ftp.pcre.org/pub/pcre/pcre2-${pcre2_version}.tar.bz2" \
+
+RUN curl -fsSL -o /tmp/pcre2.tar.bz2 "https://github.com/PhilipHazel/pcre2/releases/download/pcre2-${pcre2_version}/pcre2-${pcre2_version}.tar.bz2" \
  && sha256sum -c <<< "${pcre2_checksum}  /tmp/pcre2.tar.bz2" \
  && tar -xjf /tmp/pcre2.tar.bz2 \
  && mv pcre2-* pcre2 \
