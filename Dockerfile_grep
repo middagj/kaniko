@@ -1,8 +1,8 @@
 FROM middagj/kaniko-pcre
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
-ARG grep_version=3.6
-ARG grep_checksum=667e15e8afe189e93f9f21a7cd3a7b3f776202f417330b248c2ad4f997d9373e
+ARG grep_version=3.11
+ARG grep_checksum=1db2aedde89d0dea42b16d9528f894c8d15dae4e190b59aecc78f5a951276eab
 
 # Download
 RUN curl -fsSL -o /tmp/grep.tar.xz "${gnu_mirror}/grep/grep-${grep_version}.tar.xz" \

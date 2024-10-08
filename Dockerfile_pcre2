@@ -1,7 +1,7 @@
 FROM middagj/kaniko-zlib
 
-ARG pcre2_version=10.39
-ARG pcre2_checksum=0f03caf57f81d9ff362ac28cd389c055ec2bf0678d277349a1a4bee00ad6d440
+ARG pcre2_version=10.44
+ARG pcre2_checksum=d34f02e113cf7193a1ebf2770d3ac527088d485d4e047ed10e5d217c6ef5de96
 
 # Download
 

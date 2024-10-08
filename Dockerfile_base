@@ -10,7 +10,7 @@ WORKDIR /root
 
 RUN mkdir -p /busybox/{bin,lib}
 
-ARG musl_version=1.2.2
+ARG musl_version=1.2.5
 
 # Download public key
 RUN curl -fsSL -o /tmp/musl.pub 'https://musl.libc.org/musl.pub' \

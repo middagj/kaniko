@@ -1,7 +1,7 @@
 FROM middagj/kaniko-pcre2
 
-ARG git_version=2.31.1
-ARG git_checksum=9f61417a44d5b954a5012b6f34e526a3336dcf5dd720e2bb7ada92ad8b3d6680
+ARG git_version=2.47.0
+ARG git_checksum=1ce114da88704271b43e027c51e04d9399f8c88e9ef7542dae7aebae7d87bc4e
 
 # Download
 RUN curl -fsSL -o /tmp/git.tar.xz "https://mirrors.edge.kernel.org/pub/software/scm/git/git-${git_version}.tar.xz" \

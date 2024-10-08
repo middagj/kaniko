@@ -1,8 +1,8 @@
 FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
-ARG findutils_version=4.8.0
-ARG findutils_checksum=57127b7e97d91282c6ace556378d5455a9509898297e46e10443016ea1387164
+ARG findutils_version=4.10.0
+ARG findutils_checksum=1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5
 
 # Download
 RUN curl -fsSL -o /tmp/findutils.tar.xz "${gnu_mirror}/findutils/findutils-${findutils_version}.tar.xz" \

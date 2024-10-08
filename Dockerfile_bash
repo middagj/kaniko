@@ -1,9 +1,7 @@
 FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
-ARG bash_version=5.1
-ARG bash_patch_level=8
-ARG bash_patch_prefix=bash51
+ARG bash_version=5.2.37
 
 # Download public key
 RUN gpg --batch --keyserver keyserver.ubuntu.com --recv-keys '7C0135FB088AAF6C66C650B9BB5869F064EA74AB' \
@@ -15,18 +13,6 @@ RUN curl -fsSL -o /tmp/bash.tar.gz "${gnu_mirror}/bash/bash-${bash_version}.tar.
  && gpg --verify /tmp/bash.tar.gz.sig \
  && tar -xzf /tmp/bash.tar.gz \
  && mv bash* bash \
- && rm -f /tmp/bash*
-
-# Download patches
-RUN for lvl in $(seq $bash_patch_level); do \
-      curl -fsSL -o "/tmp/bash-$(printf '%03d' $lvl)" "${gnu_mirror}/bash/bash-${bash_version}-patches/${bash_patch_prefix}-$(printf '%03d' $lvl)" \
-      && curl -fsSL -o "/tmp/bash-$(printf '%03d' $lvl).sig" "${gnu_mirror}/bash/bash-${bash_version}-patches/${bash_patch_prefix}-$(printf '%03d' $lvl).sig" ;\
-    done \
- && cd bash \
- && while IFS= read -r file; do \
-      gpg --verify "$file" ; \
-      patch -i "${file%.sig}" -p 2 ; \
-    done < <(find -- /tmp -type f -name 'bash*.sig' | sort) \
  && rm -f /tmp/bash*
 
 # Compile

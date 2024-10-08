@@ -1,8 +1,8 @@
 FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
-ARG coreutils_version=8.32
-ARG coreutils_checksum=4458d8de7849df44ccab15e16b1548b285224dbba5f08fac070c1c0e0bcc4cfa
+ARG coreutils_version=9.5
+ARG coreutils_checksum=cd328edeac92f6a665de9f323c93b712af1858bc2e0d88f3f7100469470a1b8a
 
 # Download
 RUN curl -fsSL -o /tmp/coreutils.tar.xz "${gnu_mirror}/coreutils/coreutils-${coreutils_version}.tar.xz" \

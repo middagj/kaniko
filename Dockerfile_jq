@@ -1,10 +1,10 @@
 FROM middagj/kaniko-base
 
-ARG jq_version=1.6
-ARG jq_checksum=af986793a515d500ab2d35f8d2aecd656e764504b789b66d7e1a0b727a124c44
+ARG jq_version=1.7.1
+ARG jq_checksum=5942c9b0934e510ee61eb3e30273f1b3fe2590df93933a93d7c58b81d19c8ff5
 
 # Download and install
-RUN curl -fsSL -o /busybox/bin/jq "https://github.com/stedolan/jq/releases/download/jq-${jq_version}/jq-linux64" \
+RUN curl -fsSL -o /busybox/bin/jq "https://github.com/jqlang/jq/releases/download/jq-${jq_version}/jq-linux-amd64" \
  && sha256sum -c <<< "${jq_checksum}  /busybox/bin/jq" \
  && chmod a+x /busybox/bin/jq
 
