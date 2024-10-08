@@ -4,7 +4,6 @@ ARG pcre2_version=10.44
 ARG pcre2_checksum=d34f02e113cf7193a1ebf2770d3ac527088d485d4e047ed10e5d217c6ef5de96
 
 # Download
-
 RUN curl -fsSL -o /tmp/pcre2.tar.bz2 "https://github.com/PhilipHazel/pcre2/releases/download/pcre2-${pcre2_version}/pcre2-${pcre2_version}.tar.bz2" \
  && sha256sum -c <<< "${pcre2_checksum}  /tmp/pcre2.tar.bz2" \
  && tar -xjf /tmp/pcre2.tar.bz2 \

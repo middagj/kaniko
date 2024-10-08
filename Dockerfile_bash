@@ -17,7 +17,8 @@ RUN curl -fsSL -o /tmp/bash.tar.gz "${gnu_mirror}/bash/bash-${bash_version}.tar.
 
 # Compile
 RUN cd bash \
- && FORCE_UNSAFE_CONFIGURE=1 CC='musl-gcc' \
+ && FORCE_UNSAFE_CONFIGURE=1 \
+    CC='musl-gcc' \
     CFLAGS='-Os -ffunction-sections -fdata-sections' \
     LDFLAGS='-Wl,--gc-sections' \
     ./configure --without-bash-malloc \
