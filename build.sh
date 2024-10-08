@@ -17,7 +17,7 @@ if [[ -z $1 ]]; then
     tag="$(sed -nE 's/^FROM [^:]+:([^ ]+)/\1/p' Dockerfile | tail -n 1)"
     docker build --squash --tag "middagj/kaniko:$tag" .
     docker push "middagj/kaniko:$tag"
-    if [[ "$(git rev-parse --abbrev-ref HEAD)" == 'master' ]]; then
+    if [[ "$(git rev-parse --abbrev-ref HEAD)" == 'main' ]]; then
         docker tag "middagj/kaniko:$tag" "middagj/kaniko:latest"
         docker push "middagj/kaniko:latest"
     fi
