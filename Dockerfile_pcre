@@ -14,7 +14,7 @@ RUN curl -fsSL -o /tmp/pcre.tar.bz2 "https://downloads.sourceforge.net/project/p
 RUN cd pcre \
  && CC='musl-gcc' \
     CFLAGS='-Os -ffunction-sections -fdata-sections' \
-    CPPFLAGS='-I/root/include' \
-    LDFLAGS='-Wl,--gc-sections -L/root/lib' \
+    CPPFLAGS="-I$HOME/include" \
+    LDFLAGS="-Wl,--gc-sections -L$HOME/lib" \
     ./configure --prefix=$HOME --disable-cpp --enable-jit --enable-utf \
  && make && make install

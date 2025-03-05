@@ -14,7 +14,7 @@ RUN curl -fsSL -o /tmp/pcre2.tar.bz2 "https://github.com/PhilipHazel/pcre2/relea
 RUN cd pcre2 \
  && CC='musl-gcc' \
     CFLAGS='-Os -ffunction-sections -fdata-sections' \
-    CPPFLAGS='-I/root/include' \
-    LDFLAGS='-Wl,--gc-sections -L/root/lib' \
+    CPPFLAGS="-I$HOME/include" \
+    LDFLAGS="-Wl,--gc-sections -L$HOME/lib" \
     ./configure --prefix=$HOME \
  && make && make install
