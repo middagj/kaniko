@@ -9,7 +9,6 @@ RUN curl -fsSL -o /busybox/bin/jq "https://github.com/jqlang/jq/releases/downloa
  && chmod a+x /busybox/bin/jq
 
 # Clean /busybox
-RUN while IFS= read -r file; do \
-      strip -s -R .comment -R .gnu.version --strip-unneeded "$file" ; \
-    done < <(find -- /busybox/bin -type f | sort) \
- && rm -f /busybox/sh
+RUN for file in /busybox/bin/*; do \
+      strip -s -R .comment -R .gnu.version --strip-unneeded $file ; \
+    done

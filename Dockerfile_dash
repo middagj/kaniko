@@ -23,6 +23,6 @@ RUN cd dash \
 RUN mv dash/src/dash /busybox/bin
 
 # Clean /busybox
-RUN while IFS= read -r file; do \
-      strip -s -R .comment -R .gnu.version --strip-unneeded "$file" ; \
-    done < <(find -- /busybox/bin -type f | sort)
+RUN for file in /busybox/bin/*; do \
+      strip -s -R .comment -R .gnu.version --strip-unneeded $file ; \
+    done

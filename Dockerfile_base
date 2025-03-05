@@ -33,6 +33,6 @@ RUN cd musl \
 
 # Install
 RUN cd musl && make install \
- && while IFS= read -r lib; do mv "$(readlink "$lib")" "$lib" ; done < <(find -- /busybox/lib -type l)
+ && for lib in /busybox/lib/*; do mv $(readlink $lib) $lib; done
 
 ENV PATH="/usr/local/musl/bin:$PATH"
