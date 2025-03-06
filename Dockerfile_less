@@ -1,0 +1,34 @@
+FROM middagj/kaniko-ncurses
+
+ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
+ARG less_version=668
+
+# Download public key
+RUN curl -fsSL -o /tmp/less.pub 'https://www.greenwoodsoftware.com/less/pubkey.asc' \
+ && sha256sum -c <<< 'e1a9150cc94e518a4bdcc799ad1aeaf304c94161358473d2454fe6db7d06c61d  /tmp/less.pub' \
+ && gpg --import /tmp/less.pub \
+ && gpg --import-ownertrust <<< 'AE27252BD6846E7D6EAE1DD6F153A7C833235259:6:'
+
+# Download
+RUN curl -fsSL -o /tmp/less.tar.gz "${gnu_mirror}/less/less-${less_version}.tar.gz" \
+ && curl -fsSL -o /tmp/less.tar.gz.sig "${gnu_mirror}/less/less-${less_version}.tar.gz.sig" \
+ && gpg --verify /tmp/less.tar.gz.sig \
+ && tar -xzf /tmp/less.tar.gz \
+ && mv less-* less \
+ && rm -f /tmp/less*
+
+# Compile
+RUN cd less \
+ && CC='musl-gcc' \
+    CFLAGS="-Os -ffunction-sections -fdata-sections -I$HOME/include" \
+    LDFLAGS="-Wl,--gc-sections -static -L$HOME/lib" \
+    ./configure \
+ && make
+
+# Install
+RUN mv less/less /busybox/bin/
+
+# Clean /busybox
+RUN for file in /busybox/bin/*; do \
+      strip -s -R .comment -R .gnu.version --strip-unneeded $file ; \
+    done

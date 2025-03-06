@@ -7,8 +7,9 @@ COPY --from=middagj/kaniko-dash /busybox /busybox
 COPY --from=middagj/kaniko-findutils /busybox /busybox
 COPY --from=middagj/kaniko-git /busybox /busybox
 COPY --from=middagj/kaniko-grep /busybox /busybox
-COPY --from=middagj/kaniko-sed /busybox /busybox
 COPY --from=middagj/kaniko-jq /busybox /busybox
+COPY --from=middagj/kaniko-less /busybox /busybox
+COPY --from=middagj/kaniko-sed /busybox /busybox
 
 
 FROM gcr.io/kaniko-project/executor:v1.23.2
