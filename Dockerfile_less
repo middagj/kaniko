@@ -1,4 +1,4 @@
-FROM middagj/kaniko-ncurses
+FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
 ARG less_version=668
@@ -17,11 +17,15 @@ RUN curl -fsSL -o /tmp/less.tar.gz "${gnu_mirror}/less/less-${less_version}.tar.
  && mv less-* less \
  && rm -f /tmp/less*
 
+# Add libraries
+COPY --from=middagj/kaniko-ncurses /root/include /root/deps/include
+COPY --from=middagj/kaniko-ncurses /root/lib /root/deps/lib
+
 # Compile
 RUN cd less \
  && CC='musl-gcc' \
-    CFLAGS="-Os -ffunction-sections -fdata-sections -I$HOME/include" \
-    LDFLAGS="-Wl,--gc-sections -static -L$HOME/lib" \
+    CFLAGS="-Os -ffunction-sections -fdata-sections -I$HOME/deps/include" \
+    LDFLAGS="-Wl,--gc-sections -static -L$HOME/deps/lib" \
     ./configure \
  && make
 

@@ -1,4 +1,4 @@
-FROM middagj/kaniko-pcre
+FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
 ARG grep_version=3.11
@@ -11,12 +11,18 @@ RUN curl -fsSL -o /tmp/grep.tar.xz "${gnu_mirror}/grep/grep-${grep_version}.tar.
  && mv grep-* grep \
  && rm -f /tmp/grep*
 
+# Add libraries
+COPY --from=middagj/kaniko-pcre /root/include /root/deps/include
+COPY --from=middagj/kaniko-pcre /root/lib /root/deps/lib
+COPY --from=middagj/kaniko-zlib /root/include /root/deps/include
+COPY --from=middagj/kaniko-zlib /root/lib /root/deps/lib
+
 # Compile
 RUN cd grep \
  && CC='musl-gcc' \
     CFLAGS="-Os -ffunction-sections -fdata-sections" \
-    CPPFLAGS="-I$HOME/include" \
-    LDFLAGS="-Wl,--gc-sections -static -L$HOME/lib" \
+    CPPFLAGS="-I$HOME/deps/include" \
+    LDFLAGS="-Wl,--gc-sections -static -L$HOME/deps/lib" \
     ./configure \
  && make
 

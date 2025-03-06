@@ -1,4 +1,4 @@
-FROM middagj/kaniko-pcre2
+FROM middagj/kaniko-base
 
 ARG git_version=2.47.0
 ARG git_checksum=1ce114da88704271b43e027c51e04d9399f8c88e9ef7542dae7aebae7d87bc4e
@@ -13,12 +13,18 @@ RUN curl -fsSL -o /tmp/git.tar.xz "https://mirrors.edge.kernel.org/pub/software/
 # Temp sh
 RUN ln -s /bin/sh /busybox/sh
 
+# Add libraries
+COPY --from=middagj/kaniko-pcre2 /root/include /root/deps/include
+COPY --from=middagj/kaniko-pcre2 /root/lib /root/deps/lib
+COPY --from=middagj/kaniko-zlib /root/include /root/deps/include
+COPY --from=middagj/kaniko-zlib /root/lib /root/deps/lib
+
 # Compile
 RUN cd git \
  && CC='musl-gcc' \
     CFLAGS="-Os -ffunction-sections -fdata-sections" \
-    CPPFLAGS="-I$HOME/include" \
-    LDFLAGS="-Wl,--gc-sections -static -L$HOME/lib" \
+    CPPFLAGS="-I$HOME/deps/include" \
+    LDFLAGS="-Wl,--gc-sections -static -L$HOME/deps/lib" \
     ./configure --without-curl --without-iconv --without-openssl --without-python --without-tcltk \
                 --with-libpcre2 --with-shell=/busybox/sh \
  && make

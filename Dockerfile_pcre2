@@ -1,4 +1,4 @@
-FROM middagj/kaniko-zlib
+FROM middagj/kaniko-base
 
 ARG pcre2_version=10.44
 ARG pcre2_checksum=d34f02e113cf7193a1ebf2770d3ac527088d485d4e047ed10e5d217c6ef5de96
@@ -14,7 +14,7 @@ RUN curl -fsSL -o /tmp/pcre2.tar.bz2 "https://github.com/PhilipHazel/pcre2/relea
 RUN cd pcre2 \
  && CC='musl-gcc' \
     CFLAGS='-Os -ffunction-sections -fdata-sections' \
-    CPPFLAGS="-I$HOME/include" \
-    LDFLAGS="-Wl,--gc-sections -L$HOME/lib" \
-    ./configure --prefix=$HOME \
+    CPPFLAGS="-I$HOME/deps/include" \
+    LDFLAGS="-Wl,--gc-sections -L$HOME/deps/lib" \
+    ./configure --prefix=$HOME --disable-shared --enable-jit \
  && make && make install
