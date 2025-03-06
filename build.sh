@@ -10,7 +10,6 @@ for part in base dash zlib pcre pcre2 bash coreutils findutils git grep make sed
     file="Dockerfile_$part"
     if [[ -n $1 && $1 != "$part" ]]; then continue; fi
     docker build --file "$file" --tag "middagj/kaniko-$part" .
-    tag="$(sed -nE 's/^FROM [^:]+:([^ ]+)/\1/p' Dockerfile | tail -n 1)"
 done
 
 if [[ -z $1 ]]; then
