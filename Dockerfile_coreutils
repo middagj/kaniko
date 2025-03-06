@@ -2,11 +2,11 @@ FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
 ARG coreutils_version=9.5
-ARG coreutils_checksum=cd328edeac92f6a665de9f323c93b712af1858bc2e0d88f3f7100469470a1b8a
 
 # Download
 RUN curl -fsSL -o /tmp/coreutils.tar.xz "${gnu_mirror}/coreutils/coreutils-${coreutils_version}.tar.xz" \
- && sha256sum -c <<< "${coreutils_checksum}  /tmp/coreutils.tar.xz" \
+ && curl -fsSL -o /tmp/coreutils.tar.xz.sig "${gnu_mirror}/coreutils/coreutils-${coreutils_version}.tar.xz.sig" \
+ && gpgv --keyring gnu-keyring.gpg /tmp/coreutils.tar.xz.sig /tmp/coreutils.tar.xz \
  && tar -xJf /tmp/coreutils.tar.xz \
  && mv coreutils-* coreutils \
  && rm -f /tmp/coreutils*

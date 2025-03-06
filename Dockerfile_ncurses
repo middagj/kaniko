@@ -2,11 +2,11 @@ FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
 ARG ncurses_version=6.5
-ARG ncurses_checksum=136d91bc269a9a5785e5f9e980bc76ab57428f604ce3e5a5a90cebc767971cc6
 
 # Download
 RUN curl -fsSL -o /tmp/ncurses.tar.gz "${gnu_mirror}/ncurses/ncurses-${ncurses_version}.tar.gz" \
- && sha256sum -c <<< "${ncurses_checksum}  /tmp/ncurses.tar.gz" \
+ && curl -fsSL -o /tmp/ncurses.tar.gz.sig "${gnu_mirror}/ncurses/ncurses-${ncurses_version}.tar.gz.sig" \
+ && gpgv --keyring gnu-keyring.gpg /tmp/ncurses.tar.gz.sig /tmp/ncurses.tar.gz \
  && tar -xzf /tmp/ncurses.tar.gz \
  && mv ncurses-* ncurses \
  && rm -f /tmp/ncurses*

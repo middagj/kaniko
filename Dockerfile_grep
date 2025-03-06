@@ -2,11 +2,11 @@ FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
 ARG grep_version=3.11
-ARG grep_checksum=1db2aedde89d0dea42b16d9528f894c8d15dae4e190b59aecc78f5a951276eab
 
 # Download
 RUN curl -fsSL -o /tmp/grep.tar.xz "${gnu_mirror}/grep/grep-${grep_version}.tar.xz" \
- && sha256sum -c <<< "${grep_checksum}  /tmp/grep.tar.xz" \
+ && curl -fsSL -o /tmp/grep.tar.xz.sig "${gnu_mirror}/grep/grep-${grep_version}.tar.xz.sig" \
+ && gpgv --keyring gnu-keyring.gpg /tmp/grep.tar.xz.sig /tmp/grep.tar.xz \
  && tar -xJf /tmp/grep.tar.xz \
  && mv grep-* grep \
  && rm -f /tmp/grep*

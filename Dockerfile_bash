@@ -3,14 +3,10 @@ FROM middagj/kaniko-base
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
 ARG bash_version=5.2.37
 
-# Download public key
-RUN gpg --batch --keyserver keyserver.ubuntu.com --recv-keys '7C0135FB088AAF6C66C650B9BB5869F064EA74AB' \
- && gpg --import-ownertrust <<< '7C0135FB088AAF6C66C650B9BB5869F064EA74AB:6:'
-
 # Download
 RUN curl -fsSL -o /tmp/bash.tar.gz "${gnu_mirror}/bash/bash-${bash_version}.tar.gz" \
  && curl -fsSL -o /tmp/bash.tar.gz.sig "${gnu_mirror}/bash/bash-${bash_version}.tar.gz.sig" \
- && gpg --verify /tmp/bash.tar.gz.sig \
+ && gpgv --keyring gnu-keyring.gpg /tmp/bash.tar.gz.sig /tmp/bash.tar.gz \
  && tar -xzf /tmp/bash.tar.gz \
  && mv bash* bash \
  && rm -f /tmp/bash*

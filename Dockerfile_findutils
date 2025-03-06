@@ -2,11 +2,11 @@ FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
 ARG findutils_version=4.10.0
-ARG findutils_checksum=1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5
 
 # Download
 RUN curl -fsSL -o /tmp/findutils.tar.xz "${gnu_mirror}/findutils/findutils-${findutils_version}.tar.xz" \
- && sha256sum -c <<< "${findutils_checksum}  /tmp/findutils.tar.xz" \
+ && curl -fsSL -o /tmp/findutils.tar.xz.sig "${gnu_mirror}//findutils/findutils-${findutils_version}.tar.xz.sig" \
+ && gpgv --keyring gnu-keyring.gpg /tmp/findutils.tar.xz.sig /tmp/findutils.tar.xz \
  && tar -xJf /tmp/findutils.tar.xz \
  && mv findutils-* findutils \
  && rm -f /tmp/findutils*

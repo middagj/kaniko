@@ -2,11 +2,11 @@ FROM middagj/kaniko-base
 
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
 ARG sed_version=4.9
-ARG sed_checksum=6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181
 
 # Download
 RUN curl -fsSL -o /tmp/sed.tar.xz "${gnu_mirror}/sed/sed-${sed_version}.tar.xz" \
- && sha256sum -c <<< "${sed_checksum}  /tmp/sed.tar.xz" \
+ && curl -fsSL -o /tmp/sed.tar.xz.sig "${gnu_mirror}/sed/sed-${sed_version}.tar.xz.sig" \
+ && gpgv --keyring gnu-keyring.gpg /tmp/sed.tar.xz.sig /tmp/sed.tar.xz \
  && tar -xJf /tmp/sed.tar.xz \
  && mv sed-* sed \
  && rm -f /tmp/sed*
