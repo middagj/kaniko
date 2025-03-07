@@ -16,7 +16,8 @@ RUN cd ncurses \
  && CC='musl-gcc' \
     CFLAGS='-Os -ffunction-sections -fdata-sections' \
     LDFLAGS='-Wl,--gc-sections' \
-    ./configure --prefix=$HOME --without-cxx --without-tests \
+    ./configure --prefix=$HOME --without-ada --without-cxx --without-tests --without-manpages --without-progs \
+                --with-default-terminfo-dir=/busybox/terminfo \
  && make
 
 # Install
