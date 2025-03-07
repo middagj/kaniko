@@ -1,0 +1,27 @@
+FROM middagj/kaniko-base
+
+ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
+ARG nextvi_commit_ref=939631196fd756e11029fedeba6d97e956ea34db
+ARG nextvi_checksum=63ff380ff9e4c755018871d749db5a2488d0ab21a7d2c43ab77009095a0d6117
+
+# Download
+RUN curl -fsSL -o /tmp/nextvi.tar.gz "https://github.com/kyx0r/nextvi/archive/${nextvi_commit_ref}.tar.gz" \
+ && sha256sum -c <<< "${nextvi_checksum}  /tmp/nextvi.tar.gz" \
+ && tar -xzf /tmp/nextvi.tar.gz \
+ && mv nextvi-* nextvi \
+ && rm -f /tmp/nextvi*
+
+# Compile
+RUN cd nextvi \
+ && CC='musl-gcc' \
+    CFLAGS="-Os -ffunction-sections -fdata-sections" \
+    LDFLAGS="-Wl,--gc-sections -static" \
+    ./cbuild.sh
+
+# Install
+RUN mv nextvi/vi /busybox/bin/
+
+# Clean /busybox
+RUN for file in /busybox/bin/*; do \
+      strip -s -R .comment -R .gnu.version --strip-unneeded $file ; \
+    done
