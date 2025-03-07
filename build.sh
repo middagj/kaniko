@@ -6,7 +6,7 @@ if [[ -z $1 ]]; then
     docker pull debian:bookworm-slim
 fi
 
-for part in base dash zlib pcre pcre2 bash coreutils findutils git grep make sed jq ncurses less nextvi zsh; do
+for part in base dash zlib pcre pcre2 bash coreutils findutils git grep make sed jq yq ncurses less nextvi zsh; do
     file="Dockerfile_$part"
     if [[ -n $1 && $1 != "$part" ]]; then continue; fi
     docker build --file "$file" --tag "middagj/kaniko-$part" .

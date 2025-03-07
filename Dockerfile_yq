@@ -1,0 +1,14 @@
+FROM middagj/kaniko-base
+
+ARG yq_version=4.45.1
+ARG yq_checksum=654d2943ca1d3be2024089eb4f270f4070f491a0610481d128509b2834870049
+
+# Download and install
+RUN curl -fsSL -o /busybox/bin/yq "https://github.com/mikefarah/yq/releases/download/v${yq_version}/yq_linux_amd64" \
+ && sha256sum -c <<< "${yq_checksum}  /busybox/bin/yq" \
+ && chmod a+x /busybox/bin/yq
+
+# Clean /busybox
+RUN for file in /busybox/bin/*; do \
+      strip -s -R .comment -R .gnu.version --strip-unneeded $file ; \
+    done

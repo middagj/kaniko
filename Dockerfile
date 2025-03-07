@@ -12,6 +12,7 @@ COPY --from=middagj/kaniko-less /busybox /busybox
 COPY --from=middagj/kaniko-ncurses /busybox /busybox
 COPY --from=middagj/kaniko-nextvi /busybox /busybox
 COPY --from=middagj/kaniko-sed /busybox /busybox
+COPY --from=middagj/kaniko-yq /busybox /busybox
 COPY --from=middagj/kaniko-zsh /busybox /busybox
 
 ENV PATH="$PATH:/busybox/bin:/busybox"
