@@ -13,14 +13,21 @@ COPY --from=middagj/kaniko-ncurses /busybox /busybox
 COPY --from=middagj/kaniko-sed /busybox /busybox
 COPY --from=middagj/kaniko-zsh /busybox /busybox
 
+ENV PATH="$PATH:/busybox/bin:/busybox"
+SHELL ["/busybox/bin/bash", "-o", "pipefail", "-c"]
+
+RUN find /busybox/terminfo/ -not -type d -not -name 'xterm*' -delete
+RUN find /busybox/terminfo/ -type d -empty -delete
+
 
 FROM gcr.io/kaniko-project/executor:v1.23.2
 
 COPY --from=gcr.io/kaniko-project/warmer:v1.23.2 /kaniko/warmer /kaniko
 COPY --from=squash /busybox /busybox
-ENV PATH="$PATH:/busybox/bin:/busybox"
 
+ENV PATH="$PATH:/busybox/bin:/busybox"
 SHELL ["/busybox/bin/bash", "-o", "pipefail", "-c"]
+
 # GitLab runner expects sh at /busybox/sh
 RUN ln -s /busybox/bin/dash /busybox/sh
 
