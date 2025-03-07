@@ -1,0 +1,46 @@
+FROM middagj/kaniko-ncurses
+
+ARG zsh_version=5.9
+ARG zsh_keyring_checksum=7cfc16ad7697682eaef3637bf8fdf6b0e2767311322c8763a03c022a64d1b2ff
+
+RUN curl -fsSL -o /tmp/zsh-keyring.asc "https://www.zsh.org/pub/zsh-keyring.asc" \
+ && sha256sum -c <<< "${zsh_keyring_checksum}  /tmp/zsh-keyring.asc" \
+ && gpg --keyring zsh-keyring.kbx --no-default-keyring --import /tmp/zsh-keyring.asc \
+ && rm /tmp/zsh-keyring.asc .gnupg/*.kbx~
+
+# Download
+RUN curl -fsSL -o /tmp/zsh.tar.xz "https://www.zsh.org/pub/zsh-${zsh_version}.tar.xz" \
+ && curl -fsSL -o /tmp/zsh.tar.xz.asc "https://www.zsh.org/pub/zsh-${zsh_version}.tar.xz.asc" \
+ && gpgv --keyring zsh-keyring.kbx /tmp/zsh.tar.xz.asc /tmp/zsh.tar.xz \
+ && tar -xJf /tmp/zsh.tar.xz \
+ && mv zsh-* zsh \
+ && rm -f /tmp/zsh*
+
+# Add libraries
+COPY --from=middagj/kaniko-ncurses /root/include /root/deps/include
+COPY --from=middagj/kaniko-ncurses /root/lib /root/deps/lib
+COPY --from=middagj/kaniko-pcre /root/include /root/deps/include
+COPY --from=middagj/kaniko-pcre /root/lib /root/deps/lib
+
+# Compile
+RUN cd zsh \
+ && CC='musl-gcc' \
+    CFLAGS="-Os -ffunction-sections -fdata-sections -I$HOME/deps/include" \
+    CPPFLAGS="-I$HOME/deps/include" \
+    LDFLAGS="-Wl,--gc-sections -static -L$HOME/deps/lib" \
+    LIBS='-lpcre' \
+    ./configure --enable-libc-musl --enable-pcre --with-term-lib=ncursesw --with-tcsetpgrp \
+                --enable-zshenv=/busybox/.zshenv \
+                --enable-zshrc=/busybox/.zshrc \
+                --enable-zprofile=/busybox/.zprofile \
+                --enable-zlogin=/busybox/.zlogin \
+                --enable-zlogout=/busybox/.zlogout \
+ && make
+
+# Install
+RUN mv zsh/Src/zsh /busybox/bin
+
+# Clean /busybox
+RUN while IFS= read -r file; do \
+      strip -s -R .comment -R .gnu.version --strip-unneeded $file ; \
+    done < <(find -- /busybox/bin -type f | sort)
