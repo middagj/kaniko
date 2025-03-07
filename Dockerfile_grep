@@ -12,10 +12,11 @@ RUN curl -fsSL -o /tmp/grep.tar.xz "${gnu_mirror}/grep/grep-${grep_version}.tar.
  && rm -f /tmp/grep*
 
 # Add libraries
-COPY --from=middagj/kaniko-pcre /root/include /root/deps/include
-COPY --from=middagj/kaniko-pcre /root/lib /root/deps/lib
-COPY --from=middagj/kaniko-zlib /root/include /root/deps/include
-COPY --from=middagj/kaniko-zlib /root/lib /root/deps/lib
+COPY --from=middagj/kaniko-pcre2 /root/include /root/deps/include
+COPY --from=middagj/kaniko-pcre2 /root/lib /root/deps/lib
+
+# Fix pkg-config files
+RUN for pc in deps/lib/pkgconfig/*.pc; do sed -i 's#prefix=/root#prefix=/root/deps#' $pc; done
 
 # Compile
 RUN cd grep \
@@ -23,6 +24,7 @@ RUN cd grep \
     CFLAGS="-Os -ffunction-sections -fdata-sections" \
     CPPFLAGS="-I$HOME/deps/include" \
     LDFLAGS="-Wl,--gc-sections -static -L$HOME/deps/lib" \
+    PKG_CONFIG_LIBDIR="$HOME/deps/lib/pkgconfig" \
     ./configure \
  && make
 
