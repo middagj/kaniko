@@ -29,7 +29,7 @@ RUN cd grep \
  && make
 
 # Install
-RUN mv grep/src/*grep /busybox/bin/
+RUN mv grep/src/grep /busybox/bin/
 
 # Clean /busybox
 RUN for file in /busybox/bin/*; do \
