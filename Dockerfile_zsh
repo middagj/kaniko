@@ -41,6 +41,6 @@ RUN cd zsh \
 RUN mv zsh/Src/zsh /busybox/bin
 
 # Clean /busybox
-RUN while IFS= read -r file; do \
+RUN for file in /busybox/bin/*; do \
       strip -s -R .comment -R .gnu.version --strip-unneeded $file ; \
-    done < <(find -- /busybox/bin -type f | sort)
+    done
