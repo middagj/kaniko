@@ -20,7 +20,7 @@ RUN cd coreutils \
  && make
 
 # Install
-RUN cd coreutils && make install
+RUN cd coreutils && make install-exec
 
 # Clean /busybox
 RUN for file in /busybox/bin/*; do \
