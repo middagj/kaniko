@@ -13,7 +13,7 @@ RUN mkdir -p /busybox/{bin,lib}
 ARG musl_version=1.2.5
 ARG musl_pubkey_checksum=bf6baaa63c2c4958636850a24bb9d2d514c8b6a1b3ab9c08f3b75910fb6f57be
 ARG gnu_mirror=https://ftp.snt.utwente.nl/pub/software/gnu
-ARG gnu_keyring_checksum=c72adb7f24fbab0a1e1a8062b715bd47f66754cd9bad6d098101bd4755adc46e
+ARG gnu_keyring_checksum=156881aae078e21d9a6f5b93c3f992431051720ec5dc9b2070ebc3e23a9d50c2
 
 # Download public keys
 RUN curl -fsSL -o /tmp/musl.pub 'https://musl.libc.org/musl.pub' \
